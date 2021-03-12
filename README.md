@@ -1,61 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Task 1
+# Построение Базы 
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```sh
+CREATE TABLE users (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(250),
+  `last_name` varchar(250),
+  `age` tinyint(3) UNSIGNED,
+   PRIMARY KEY (`id`)
+);
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+CREATE TABLE books (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(250),
+  `autor` varchar(250),
+   PRIMARY KEY (`id`)
+);
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+CREATE TABLE user_books (
+  `id` int(11) UNSIGNED NOT NULL  AUTO_INCREMENT,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `book_id` int(11) UNSIGNED NOT NULL,
+   PRIMARY KEY (`id`)
+);
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+INSERT INTO users VALUES
+(1, 'Ivan', 'Ivanov', 7),
+(2, 'Marina', 'Ivanova', 17),
+(3, 'Peter', 'Petrow', 16),
+(4, 'Elena', 'Petrowa', 14);
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+INSERT INTO books VALUES
+(1, 'Romeo and Juliet', 'William Shakespeare'),
+(2, 'Hamlet', 'William Shakespeare'),
+(3, 'War and Peace', 'Leo Tolstoy'),
+(4, 'Anna Karenina', 'Leo Tolstoy');
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+INSERT INTO user_books VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 2, 1),
+(5, 2, 2),
+(6, 3, 3),
+(7, 3, 4),
+(8, 4, 1),
+(9, 4, 4);
+```
+### Ответ
+```sh
+SELECT users.`id`, 
+       CONCAT(users.`first_name`, ' ' ,users.`last_name`) as Name,
+       books.`autor` AS AUTOR,
+       GROUP_CONCAT(books.`name`) as Books
+       FROM users
+JOIN user_books ON users.`id` = user_books.`user_id`
+JOIN books  ON books.`id` = user_books.`book_id`
+WHERE
+users.`age` BETWEEN 7 AND 17
+GROUP BY users.`id` 
+HAVING 
+COUNT(books.`id`) = 2 AND  max(AUTOR) = min(AUTOR)
+```
+### Посмотреть работу запроса
+[https://www.db-fiddle.com/f/oYyxReqQNcoqD9sJmKNKt8/0](https://www.db-fiddle.com/f/oYyxReqQNcoqD9sJmKNKt8/0)
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+## Task 2
+[GithHub repository](https://github.com/Hrant1020/currency_api)
 
-## Contributing
+### Для Получения Валютных Курсов
+```sh
+php artisan migrate
+php artisan fetch-rates
+```
+### Что не успел
+- Нормально Протестировать
+- Код рефакторинг
+- Использование Strict Type Hinting
+- Генерация PHPDOC
+- Нормальная Валидация
+- response  может содержать  цифру e 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
