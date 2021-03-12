@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  app:
+    image: 'laravelapp'
+    ports:
+      - 8080:80
+    volumes:
+      - ./:/var/www/html
+  db:
+    image: library/mariadb:10.4.12
+    restart: always
+    ports:
+      - "33061:3306"
+    environment:
+      MYSQL_DATABASE: 'currency_api'
+      MYSQL_ROOT_PASSWORD: "123secret"
+    volumes:
+      - ./db:/var/lib/mysql
